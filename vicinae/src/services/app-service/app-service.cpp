@@ -2,6 +2,7 @@
 #include "services/app-service/xdg/xdg-app-database.hpp"
 #include "omni-database.hpp"
 #include "utils.hpp"
+#include "utils/environment.hpp"
 #include <filesystem>
 #include <qcontainerfwd.h>
 #include <qfilesystemwatcher.h>
@@ -56,6 +57,7 @@ bool AppService::launchRaw(const QString &prog, const std::vector<QString> &args
   process.setArguments(ranges_to<QStringList>(args));
   process.setStandardOutputFile(QProcess::nullDevice());
   process.setStandardErrorFile(QProcess::nullDevice());
+  process.setProcessEnvironment(Environment::sanitizedAppLaunchEnvironment(prog));
 
   if (!process.startDetached()) {
     qWarning() << "Failed to start app" << prog << args << process.errorString();

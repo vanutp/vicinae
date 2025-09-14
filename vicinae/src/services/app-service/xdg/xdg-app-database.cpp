@@ -1,5 +1,6 @@
 #include "xdg-app-database.hpp"
 #include "vicinae.hpp"
+#include "utils/environment.hpp"
 #include <exception>
 #include <filesystem>
 #include <qlogging.h>
@@ -341,6 +342,7 @@ bool XdgAppDatabase::launch(const Application &app, const std::vector<QString> &
   process.setArguments(argv);
   process.setStandardOutputFile(QProcess::nullDevice());
   process.setStandardErrorFile(QProcess::nullDevice());
+  process.setProcessEnvironment(Environment::sanitizedAppLaunchEnvironment(program));
 
   if (!process.startDetached()) {
     qWarning() << "Failed to start app" << argv << process.errorString();
